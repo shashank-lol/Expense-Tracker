@@ -13,6 +13,7 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  final maxWidth = 600;
   final List<Expense> _registeredExpense = [
     Expense(
         amount: 750,
@@ -54,6 +55,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _createNewExpense() {
     showModalBottomSheet(
+        useSafeArea: true,
         isScrollControlled: true,
         isDismissible: true,
         context: context,
@@ -64,6 +66,7 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     Widget mainContent = Center(
         child: Text(
       "No expenses. Try adding some!",
@@ -85,12 +88,19 @@ class _ExpensesState extends State<Expenses> {
         ],
         title: const Text("Expense Tracker"),
       ),
-      body: Column(
-        children: [
-          Chart(expenses: _registeredExpense),
-          Expanded(child: mainContent)
-        ],
-      ),
+      body: width < maxWidth
+          ? Column(
+              children: [
+                Chart(expenses: _registeredExpense),
+                Expanded(child: mainContent)
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: Chart(expenses: _registeredExpense)),
+                Expanded(child: mainContent)
+              ],
+            ),
     );
   }
 }
